@@ -1,0 +1,65 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Conseils Pour Malloc et Free.txt                   :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: fsanlavi <florent-pro@hotmail.com>         +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2015/07/28 10:56:23 by fsanlavi          #+#    #+#              #
+#    Updated: 2015/07/28 11:01:03 by fsanlavi         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+									Malloc :
+
+- Permet d'allouer de la mémoire et retourne un pointeur sur cette mémoire;
+
+- S'utilise sur un élément créé en début de fonction avant de lui assigner des
+valeurs;
+
+- Il est préférable d'initialiser cet élément à NULL, avant de faire un Malloc
+dessus;
+
+- Il est OBLIGATOIRE de toujours sécuriser son Malloc en vérifiant qu'il ne
+retourne pas NULL au cas où il aurait échoué l'allocation de mémoire :
+if ((str = (char ) malloc(sizeof(char) * BUFSIZE)) == NULL) 
+	/ Retourner un message d'erreur ou 0 */
+	
+- Si cette étape n'est pas respectée, vous augmentez de 99.9% vos chances de
+Segfault
+
+
+									Free :
+	
+-	La fonction Free permet de libérer la mémoire précédemment allouée par
+	Malloc;
+
+-	Elle s'utilise donc après la fonction Malloc;
+
+-	Elle renvoie NULL si elle échoue. 3 raisons principales à l'échec de Free :
+	-	Soit vous avez Free un élément qui n'avait pas de mémoire allouée,
+
+	-	Soit vous avez Free un élément que vous êtes en train d'utiliser 
+	et que vous ne "Mallocez" pas après le Free avant de le réutiliser;
+
+	-	Soit vous faites Free sur un élément sur lequel
+	vous n'avez pas les droits de mémoire.
+
+-	Réinitialisez toujours votre élément à NULL après l'avoir Free.
+
+-	Essayez de Malloc et Free un élément dans la même scope :
+
+{
+	char	*str;
+
+	str = NULL;
+	if ((str = malloc(sizeof(char) * BUFSIZE)) == NULL)
+/* Retourner un message d'erreur ou 0 */
+			
+/* Effectuez votre fonction */
+			
+/* Une fois que vous avez fini, libérez la mémoire */
+			
+	free(str);
+	str = NULL;
+}
