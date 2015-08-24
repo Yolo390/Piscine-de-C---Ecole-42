@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    lookforname                                        :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: fbellott <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2015/07/08 02:20:33 by fbellott          #+#    #+#              #
+#    Updated: 2015/07/08 02:20:33 by fbellott         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+is_first_line=true
+list=`ldapsearch -QLLL "(sn=$1)" | grep -e 'dn:' -e 'sn:' -e 'givenName' -e 'mail' -e 'mobile' | cut -d' ' -f2`
+
+for info in $list; do
+	if [[ $info == 'uid='* ]] && [[ "$is_first_line" != "true" ]] ; then
+		echo ''
+	else
+		if [[ $info != 'uid='* ]]; then
+			if [[ $info == *'@'* ]]; then
+				echo "Mail: $info"
+			elif [[ $info = *[[:digit:]]* ]]; then
+				echo "Portable: $info"
+			elif [[ $info == `echo $info | tr '[:lower:]' '[:upper:]'` ]]; then
+				echo "Nom: $info"
+			else
+				echo "Prenom: $info"
+			fi
+		fi
+	fi
+	is_first_line=false
+done
